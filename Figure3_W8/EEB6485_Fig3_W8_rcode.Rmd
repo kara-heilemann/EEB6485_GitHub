@@ -1,0 +1,33 @@
+---
+title: "EEB6485_DataVis_21_03_10"
+output: word_document
+---
+
+```{r}
+setwd("~/Desktop/EEB_6485/Fig_Week8")
+plant.ab <- read.csv("EEB6485_data_210310.csv")
+library(ggplot2)
+```
+
+```{r}
+head(plant.ab)
+#attempting to merge genus and species smh
+library(dplyr)
+plant.ab.c <- mutate(plant.ab, Plant = paste(Plant.Genus, Plant.Species))
+head(plant.ab.c)
+```
+
+
+```{r}
+  
+plot <- ggplot(data=plant.ab.c, aes(x=Plant, y=Abundance, fill=Plant, color=Plant)) +
+  geom_boxplot(varwidth = TRUE, alpha=0.2) +
+  scale_y_log10() +
+  theme(legend.position = "none", panel.grid = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black")) +
+  coord_flip()
+    
+  plot(plot)
+  
+```
+
+

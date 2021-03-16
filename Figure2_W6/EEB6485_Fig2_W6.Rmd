@@ -1,0 +1,83 @@
+---
+title: "EEB6465_DataVis_Fig1"
+output: html_document
+---
+```{r}
+setwd("~/Desktop/EEB_6485/Fig1")
+fig1labdata <- read.csv("Lab_exp.csv")
+fig1fielddata <- read.csv("Field_exp.csv")
+head(fig1labdata)
+head(fig1fielddata)
+```
+
+```{r}
+initialplot <- ggplot(fig1labdata, aes(x= Treatment, y= Diplo_intensity)) + geom_violin()
+
+initialplot + stat_summary(fun.data =mean_sdl, mult=1, geom = "pointrange", color="red")
+
+```
+
+```{r}
+errorbars <- group_by(fig1labdata, Treatment) %>% 
+              summarize(mean=mean(Diplo_intensity), se=sd(Diplo_intensity)/sqrt(n()), 
+                        upper=mean+(2*se), lower=mean-(2*se))
+
+print(errorbars)
+
+SEplot <- ggplot() +
+  geom_violin(data=fig1labdata, aes(x=Treatment, y=Diplo_intensity, fill=Treatment, color=Treatment)) +
+  geom_point(data=errorbars, aes(x=Treatment, y=mean), size=3) +
+  geom_errorbar(aes(x=errorbars$Treatment, ymax=errorbars$upper, 
+                ymin=errorbars$lower), stat='identity', width=.25) +
+  theme_minimal()
+
+SEplot
+
+```
+
+```{r}
+
+SEscatterplot <- ggplot() +
+  geom_violin(data=fig1labdata, aes(x=Treatment, y=Diplo_intensity, fill=Treatment, color=Treatment)) +
+  scale_fill_grey() + 
+  scale_color_grey() +
+  geom_point(data=errorbars, aes(x=Treatment, y=mean), color="white", size=3) +
+  geom_point(data=fig1labdata, aes(x=Treatment, y=Diplo_intensity), color="black", size=1, position = position_jitter(w=0.2)) +
+  geom_errorbar(aes(x=errorbars$Treatment, ymax=errorbars$upper, 
+                ymin=errorbars$lower), stat='identity', width=.25, color="white") +
+  theme_classic() +
+  ylab("Diplostomum metacercariae") + xlab("Treatment Group") + ggtitle("Number of Diplostomum pseudospathaceum metacercariae \n in experimentally exposed fish") +
+  theme(plot.title = element_text(hjust = 0.5, vjust = 1, face = "bold"))
+
+SEscatterplot 
+
+```
+
+```{r}
+SEerrbarplot <- ggplot() +
+  geom_violin(data=fig1labdata, aes(x=Treatment, y=Diplo_intensity, fill=Treatment, color=Treatment)) +
+  scale_fill_grey() + 
+  scale_color_grey() +
+  geom_point(data=errorbars, aes(x=Treatment, y=mean), color="white", size=3) +
+  geom_errorbar(aes(x=errorbars$Treatment, ymax=errorbars$upper, 
+                ymin=errorbars$lower), stat='identity', width=.25, color="white") +
+  theme_classic() +
+  ylab("Diplostomum metacercariae") + xlab("Treatment Group") + ggtitle("Number of Diplostomum pseudospathaceum metacercariae \n in experimentally exposed fish") +
+  theme(plot.title = element_text(hjust = 0.5, vjust = 1, face = "bold"))
+
+SEerrbarplot
+```
+
+```{r}
+SEboxplot <- ggplot() +
+  geom_violin(data=fig1labdata, aes(x=Treatment, y=Diplo_intensity, fill=Treatment, color=Treatment)) +
+  scale_fill_grey() + 
+  scale_color_grey() +
+  geom_boxplot(data=fig1labdata, aes(x=Treatment, y=Diplo_intensity), width=.1, outlier.shape=NA, color="white", fill=NA) +
+  theme_classic() +
+  ylab("Diplostomum metacercariae") + xlab("Treatment Group") + ggtitle("Number of Diplostomum pseudospathaceum metacercariae \n in experimentally exposed fish") +
+  theme(plot.title = element_text(hjust = 0.5, vjust = 1, face = "bold"))
+
+print(SEboxplot)
+```
+
