@@ -1,0 +1,46 @@
+---
+title: "EEB6485_Fig4_W10"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+setwd("~/Desktop/EEB_6485")
+pdata <- read.csv("EEB6485_W10_Data.csv")
+library(ggplot2)
+```
+
+```{r}
+pdata$Hematocrit=factor(pdata$Hematocrit,levels=c("<30%","30%to<33%","33%to<36%","36%to<39%","≥39%","All"))
+pdata$Hematocrit
+```
+
+
+```{r}
+##Code taken from Claus Wilke Figure 6.8
+
+# Take the darkest seven colors from 8-class ColorBrewer palette "PuBu"
+colors_seven = RColorBrewer::brewer.pal(8, "PuBu")[2:8]
+
+ggplot(pdata, aes(x = Quartile, y = Mortality, fill = Hematocrit)) +
+  geom_col(position = "dodge", alpha = 0.9) +
+  scale_y_continuous(
+    expand = c(0, 0),
+    name = "Mortality per 1,000 Patients"
+  ) +
+  scale_fill_manual(values = colors_seven, name = "Hematocrit Group") +
+  coord_cartesian(clip = "off") +
+  xlab(label = "Dose Quartile") +
+  theme_classic() +
+  theme(
+    axis.ticks.x = element_blank(),
+    legend.title.align = 0.5
+  ) -> dataplot
+
+dataplot
+```
+
